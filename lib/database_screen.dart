@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
 
 class DatabaseScreen extends StatefulWidget {
 
@@ -193,24 +198,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
     );
   }
 
-  void createDatabase() async {
 
-    // open the database
-    await openDatabase('tasks.dp', version: 1, onOpen: (Database dp) {
-      currentDatabase = dp;
-      getTasks();
-    }, onCreate: (Database db, int version) async {
-      // When creating the db, create the table
-      await db.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY, name TEXT, priority TEXT)');
-    });
-
-    // Get a location using getDatabasesPath
-    var databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'tasks.dp');
-    print(path);
-
-
-  }
 
   void insertTask(name,priority) async {
     if (currentDatabase != null) {
@@ -222,6 +210,8 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
         });
         print('inserted + $id1');
       });
+    }else{
+      print("DATABASE NOT CREATED");
     }
   }
 
@@ -288,4 +278,51 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
           ),
         ));
   }
+
+  void createDatabase() async {
+    if (Platform.isAndroid) {
+      Directory K= await getExternalStorageDirectory();
+      String path = join(K.path, 'tasks.dp');
+      //.....................
+
+      print(path);
+
+
+
+
+
+      // delete existing if any
+      //await deleteDatabase(path);
+// open the database
+
+      // Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      // print("////$documentsDirectory");
+      // if (Platform.isAndroid) {
+      //   Directory databaseDirectory =
+      //   Directory(documentsDirectory.parent.path + '/databases');
+      //   if (await databaseDirectory.exists() &&
+      //       await File(databaseDirectory.path + '/' + "task.db").exists()) {
+      //     documentsDirectory = databaseDirectory;
+      //     print("////$documentsDirectory");
+      //   }
+      // }
+
+
+
+      // open the database
+      await openDatabase(path, version: 1, onOpen: (Database dp) {
+        currentDatabase = dp;
+        getTasks();
+      }, onCreate: (Database db, int version) async {
+        // When creating the db, create the table
+        await db.execute('CREATE TABLE Tasks (id INTEGER PRIMARY KEY, name TEXT, priority TEXT)');
+      });
+
+
+
+
+    }
+  }
+
+
 }
