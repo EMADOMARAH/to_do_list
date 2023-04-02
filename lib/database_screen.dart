@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -172,8 +171,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
                 width: double.infinity,
                 color: Colors.blue,
                 height: 40.0,
-                child: FlatButton(
-                  padding: EdgeInsets.zero,
+                child: TextButton(
                   onPressed: ()
                   {
                     if(taskat != null)
@@ -260,7 +258,7 @@ class _DatabaseScreenState extends State<DatabaseScreen> {
                 width: double.infinity,
                 height: 40.0,
                 color: Colors.blue,
-                child: FlatButton(
+                child: TextButton(
                   onPressed: ()
                   {
                     deleteTask(id);
